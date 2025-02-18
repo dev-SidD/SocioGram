@@ -25,7 +25,7 @@ function MainContent() {
     <div className="App">
       {!hideNavbarPaths.includes(location.pathname) && <Navbar />}
       <Routes>
-        {/* <Route path="/login" element={<Login />} /> */}
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Dashboard />} />
         <Route path="/user-profile" element={<UserProfile />} />
