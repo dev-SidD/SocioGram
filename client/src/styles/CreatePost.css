@@ -1,0 +1,99 @@
+/* ✨ Post Form Styles */
+.post-form {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  /* 📜 Textarea for Post Content */
+  .post-form textarea {
+    width: 100%;
+    height: 100px;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    resize: none;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+  }
+  
+  .post-form textarea:focus {
+    border-color: #0095f6;
+  }
+  
+  /* 📸 File Upload Input */
+  .upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .upload-label:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .post-form input[type="file"] {
+    display: none; /* Hide default file input */
+  }
+  
+  /* 🔄 Uploading Indicator */
+  .uploading-text {
+    text-align: center;
+    font-size: 14px;
+    color: #0095f6;
+    font-weight: bold;
+  }
+  
+  /* 📷 Uploaded Image Preview */
+  .uploaded-image {
+    display: block;
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin: 10px auto;
+    border: 2px solid #ddd;
+  }
+  
+  /* ✨ Create Post Button */
+  .create-post-btn {
+    background-color: #0095f6;
+    width: 25%;
+    margin: auto;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .create-post-button:hover {
+    background-color: #0077cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 149, 246, 0.3);
+  }
+  
+  .create-post-button:disabled {
+    background-color: #bdbdbd;
+    cursor: not-allowed;
+  }
+  
