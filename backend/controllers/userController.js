@@ -15,11 +15,12 @@ const getAllUsers = async (req, res) => {
 // Read user profile by username
 const getUserProfile = async (req, res) => {
     const { username } = req.params;
-    
-    
+
     try {
-        const user = await User.findOne({ username }).select("-password"); // Exclude password for security
-        console.log(user);
+        const user = await User.findOne({ username })
+            .select("-password") // exclude password
+            .populate("followers", "username fullName profilePicture")
+            .populate("following", "username fullName profilePicture");
 
         if (!user) {
             return res.status(404).json({ msg: "User not found." });
@@ -32,18 +33,19 @@ const getUserProfile = async (req, res) => {
             email: user.email,
             profilePicture: user.profilePicture,
             bio: user.bio,
-            followers: user.followers, // Full list of followers
-            following: user.following, // Full list of following users
-            posts: user.posts, // Posts created by the user
-            savedPosts: user.savedPosts, // Posts saved by the user
-            notifications: user.notifications, // User notifications
-            createdAt: user.createdAt, // Account creation date
+            followers: user.followers, // Populated follower data
+            following: user.following, // Populated following data
+            posts: user.posts,
+            savedPosts: user.savedPosts,
+            notifications: user.notifications,
+            createdAt: user.createdAt,
         });
     } catch (error) {
         console.error("Error fetching profile:", error);
         res.status(500).json({ error: "Server error" });
     }
 };
+
 
 
 // Update user profile based on username, including password change

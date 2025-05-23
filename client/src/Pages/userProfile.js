@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Edit, LogOut, PlusCircle } from "lucide-react";
 import axios from "axios";
 import "../styles/userProfile.css";
-
+import FollowersModal from "../components/FollowersModal";
 const UserProfile = () => {
+  const [showFollowersModal, setShowFollowersModal] = useState(false);
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const UserProfile = () => {
             <div className="stat">
               <strong>{posts.length}</strong> posts
             </div>
-            <div className="stat">
+            <div className="stat" onClick={() => setShowFollowersModal(true)} style={{ cursor: "pointer" }}>
               <strong>{userData.followers?.length || 0}</strong> followers
             </div>
             <div className="stat">
@@ -105,6 +106,13 @@ const UserProfile = () => {
           <div className="no-posts">No posts yet.</div>
         )}
       </div>
+      {showFollowersModal && (
+  <FollowersModal
+    followers={userData.followers}
+    onClose={() => setShowFollowersModal(false)}
+  />
+)}
+
     </div>
   );
 };

@@ -24,7 +24,12 @@ const ViewUserProfile = () => {
         setUserData(userResponse.data);
 
         // Check if the current user is following this user
-        setIsFollowing(userResponse.data.followers.includes(storedUser.id));
+        setIsFollowing(
+  userResponse.data.followers.some(
+    (follower) => follower._id === storedUser.id
+  )
+);
+
 
         // Fetch user's posts
         const postsResponse = await axios.get(`http://localhost:5000/api/posts/user/${userResponse.data.id}`);

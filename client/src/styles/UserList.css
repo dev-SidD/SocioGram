@@ -1,61 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
 .user-list-container {
-    padding: 20px;
-    max-width: 400px;
-    margin: auto;
-    
-    border-radius: 8px;
-   
+  font-family: 'Poppins', sans-serif;
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .user-list-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  text-align: center;
+  color: #333;
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 0.5rem;
 }
 
 .user-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .user-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  padding: 0.8rem;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.3s ease;
 }
 
-.user-item:last-child {
-    border-bottom: none;
+.user-item:hover {
+  background-color: #fafafa;
 }
 
 .user-profile-img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 1rem;
+  border: 2px solid #eee;
 }
 
 .user-info {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .user-fullname {
-    font-size: 16px;
-    font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
 }
 
 .user-username {
-    font-size: 14px;
-    color: #666;
+  font-size: 0.875rem;
+  color: #777;
+  margin: 0.2rem 0 0;
 }
 
 .loading-text,
 .error-text {
-    text-align: center;
-    font-size: 14px;
-    color: red;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  color: #888;
+  margin-top: 2rem;
 }

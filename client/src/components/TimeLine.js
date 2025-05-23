@@ -9,11 +9,13 @@ const Timeline = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) {
+        if (!token || !userData) {
           navigate("/login");
           return;
         }
@@ -43,11 +45,24 @@ const Timeline = () => {
     };
 
     fetchPosts();
-  }, [navigate]);
+  }, [navigate, userData]);
 
-  const userData = JSON.parse(localStorage.getItem("userData"));
+  if (!userData) {
+    navigate("/login");
+    return null;
+  }
+
   const userId = userData.id;
   const username = userData.username;
+
+  const fetchPosts = async () => {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:5000/api/posts", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await response.json();
+    setPosts(data);
+  };
 
   // Like/Unlike a post
   const toggleLike = async (postId, isLiked) => {
@@ -76,11 +91,11 @@ const Timeline = () => {
         prevPosts.map((post) =>
           post._id === postId
             ? {
-                ...post,
-                likes: isLiked
-                  ? post.likes.filter((id) => id !== userId)
-                  : [...post.likes, userId],
-              }
+              ...post,
+              likes: isLiked
+                ? post.likes.filter((id) => id !== userId)
+                : [...post.likes, userId],
+            }
             : post
         )
       );
@@ -110,19 +125,8 @@ const Timeline = () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.msg || "Failed to add comment");
 
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post._id === postId
-            ? {
-                ...post,
-                comments: [
-                  ...post.comments,
-                  { ...data.comment, user: userId, username }, // Store username with comment
-                ],
-              }
-            : post
-        )
-      );
+      await fetchPosts(); // refetch posts to sync comments
+
       setCommentText({ ...commentText, [postId]: "" });
     } catch (err) {
       console.error("Error adding comment:", err);
@@ -139,7 +143,7 @@ const Timeline = () => {
       }
 
       const response = await fetch(`http://localhost:5000/api/posts/${postId}/comment/${commentId}`, {
-        method: "DELETE", // Changed from PUT to DELETE
+        method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -148,13 +152,7 @@ const Timeline = () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.msg || "Failed to delete comment");
 
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post._id === postId
-            ? { ...post, comments: post.comments.filter((comment) => comment._id !== commentId) }
-            : post
-        )
-      );
+      await fetchPosts(); // refetch posts to sync after deletion
     } catch (err) {
       console.error("Error deleting comment:", err);
     }
@@ -165,7 +163,7 @@ const Timeline = () => {
       {error && <p className="error-msg">{error}</p>}
 
       {posts.length === 0 ? (
-        <p>No posts from followed users.</p>
+        <p>No posts.</p>
       ) : (
         <div className="timeline">
           {posts.map((post) => {
@@ -205,12 +203,16 @@ const Timeline = () => {
                 <div className="comments-section">
                   {post.comments.map((comment) => (
                     <div key={comment._id} className="comment">
-                      <strong>{comment.username}:</strong> {comment.content}
+                      <div className="comment-content">
+                        <strong>{comment.username}:</strong> {comment.content}
+                        <div className="comment-time">{new Date(comment.createdAt).toLocaleString()}</div>
+                      </div>
                       {comment.user === userId && (
                         <FaTrash className="delete-icon" onClick={() => handleDeleteComment(post._id, comment._id)} />
                       )}
                     </div>
                   ))}
+
 
                   {/* Add Comment Input */}
                   <div className="add-comment">
