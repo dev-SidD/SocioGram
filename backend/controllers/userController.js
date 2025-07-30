@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
-
+const Notification = require("../models/notification"); 
 // Get all users
 const getAllUsers = async (req, res) => {
     try {
@@ -37,7 +37,6 @@ const getUserProfile = async (req, res) => {
             following: user.following, // Populated following data
             posts: user.posts,
             savedPosts: user.savedPosts,
-            notifications: user.notifications,
             createdAt: user.createdAt,
         });
     } catch (error) {
@@ -121,48 +120,67 @@ const deleteProfile = async (req, res) => {
 
 // Follow a user
 const followUser = async (req, res) => {
-    const { username } = req.params; 
-    const { authenticatedUsername } = req.body; 
+  const { username } = req.params; 
+  const { authenticatedUsername } = req.body;
 
-    try {
-        const authenticatedUser = await User.findOne({ username: authenticatedUsername });
-
-        if (!authenticatedUser) {
-            return res.status(404).json({ msg: "Authenticated user not found." });
-        }
-
-        const userToFollow = await User.findOne({ username });
-        
-        if (!userToFollow) {
-            
-            return res.status(404).json({ msg: "User to follow not found." });
-        }
-
-        // Prevent following themselves
-        if (authenticatedUser.username === userToFollow.username) {
-            return res.status(400).json({ msg: "You cannot follow yourself." });
-        }
-
-        // Check if already following
-        if (authenticatedUser.following.includes(userToFollow._id)) {
-            return res.status(400).json({ msg: "You are already following this user." });
-        }
-
-        // Add to following list of authenticated user
-        authenticatedUser.following.push(userToFollow._id);
-        // Add to followers list of the user being followed
-        userToFollow.followers.push(authenticatedUser._id);
-
-        await authenticatedUser.save();
-        await userToFollow.save();
-
-        res.json({ msg: "Successfully followed the user." });
-    } catch (error) {
-        console.error("Follow error:", error);
-        res.status(500).json({ error: "Server error" });
+  try {
+    const authenticatedUser = await User.findOne({ username: authenticatedUsername });
+    if (!authenticatedUser) {
+      return res.status(404).json({ msg: "Authenticated user not found." });
     }
-};
 
+    const userToFollow = await User.findOne({ username });
+    if (!userToFollow) {
+      return res.status(404).json({ msg: "User to follow not found." });
+    }
+
+    if (authenticatedUser.username === userToFollow.username) {
+      return res.status(400).json({ msg: "You cannot follow yourself." });
+    }
+
+    if (authenticatedUser.following.includes(userToFollow._id)) {
+      return res.status(400).json({ msg: "You are already following this user." });
+    }
+
+    authenticatedUser.following.push(userToFollow._id);
+    userToFollow.followers.push(authenticatedUser._id);
+
+    await authenticatedUser.save();
+    await userToFollow.save();
+
+    // ✅ Create a notification
+    const newNotification = await Notification.create({
+      user: userToFollow._id,
+      fromUser: authenticatedUser._id,
+      type: "follow",
+      message: `${authenticatedUser.username} followed you`,
+    });
+
+    // ✅ Emit via Socket.IO if user is online
+    if (req.io && req.onlineUsers) {
+      const recipientSocketId = req.onlineUsers.get(userToFollow._id.toString());
+      if (recipientSocketId) {
+        req.io.to(recipientSocketId).emit("new-notification", {
+          _id: newNotification._id,
+          message: newNotification.message,
+          type: newNotification.type,
+          fromUser: {
+            _id: authenticatedUser._id,
+            username: authenticatedUser.username,
+            fullName: authenticatedUser.fullName,
+            profilePicture: authenticatedUser.profilePicture,
+          },
+          createdAt: newNotification.createdAt,
+        });
+      }
+    }
+
+    res.json({ msg: "Successfully followed the user." });
+  } catch (error) {
+    console.error("Follow error:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 // Unfollow a user
 const unfollowUser = async (req, res) => {
     const { username } = req.params;
@@ -206,11 +224,85 @@ const unfollowUser = async (req, res) => {
     }
 };
 
+// Search users by username or full name (case-insensitive)
+const searchUsers = async (req, res) => {
+    const query = req.query.query;
+
+    if (!query) {
+        return res.status(400).json({ msg: "Search query is required." });
+    }
+
+    try {
+        const regex = new RegExp(query, "i"); // case-insensitive match
+
+        const users = await User.find({
+            $or: [
+                { username: { $regex: regex } },
+                { fullName: { $regex: regex } },
+            ],
+        }).select("username fullName profilePicture");
+
+        res.json({ users });
+    } catch (error) {
+        console.error("Search error:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+};
+// controllers/userController.js
+const getNotifications = async (req, res) => {
+  try {
+    // Fetch unread notifications for the user
+    const notifications = await Notification.find({
+      user: req.user._id,
+      isRead: false,
+    })
+      .sort({ createdAt: -1 })
+      .limit(30)
+      .populate("fromUser", "username fullName profilePicture")
+      .populate("post", "image")
+      .lean();
+
+    // Filter out duplicates based on type + fromUser + post (or customize as needed)
+    const uniqueMap = new Map();
+    const uniqueNotifications = [];
+
+    for (const notif of notifications) {
+      const key = `${notif.type}-${notif.fromUser?._id}-${notif.post?._id || ""}`;
+      if (!uniqueMap.has(key)) {
+        uniqueMap.set(key, true);
+        uniqueNotifications.push(notif);
+      }
+    }
+
+    res.json(uniqueNotifications);
+  } catch (err) {
+    console.error("Error fetching notifications:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+
+const markAllNotificationsAsRead = async (req, res) => {
+  try {
+    await Notification.updateMany(
+      { user: req.user._id, isRead: false },
+      { $set: { isRead: true } }
+    );
+    res.json({ msg: "All notifications marked as read." });
+  } catch (err) {
+    console.error("Marking read error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 module.exports = {
     getAllUsers,  // New function added
     getUserProfile,
     updateProfile,
     deleteProfile,
     followUser,
-    unfollowUser
+    unfollowUser,
+    searchUsers,
+    getNotifications,
+    markAllNotificationsAsRead
 };

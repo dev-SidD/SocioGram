@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { signup } from "../Services/authService";
-import { useNavigate } from "react-router-dom";
-import "../styles/Signup.css"; // Import the CSS file
+import { useNavigate, Link } from "react-router-dom";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -25,20 +24,20 @@ const Signup = () => {
     setError("");
     setSuccess("");
 
-    if (!formData.fullName || !formData.username || !formData.email || !formData.password) {
+    const { fullName, username, email, password } = formData;
+    if (!fullName || !username || !email || !password) {
       setError("All fields are required.");
       return;
     }
 
     try {
-     const res = await signup(formData);
-      setSuccess("Signup successful! You can now log in.");
+      const res = await signup(formData);
+      setSuccess(res.data.msg || "Verification email sent. Please check your inbox.");
       setError("");
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("userData", JSON.stringify(res.data.user));
+
       setTimeout(() => {
-        navigate("/");
-      }, 2000);
+        navigate("/login");
+      }, 3000);
     } catch (err) {
       setError(err.response?.data?.msg || "Signup failed.");
       setSuccess("");
@@ -46,17 +45,20 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup-container">
-      <div className="signup-box">
-        <h2>Sign Up</h2>
-        <form onSubmit={handleSubmit}>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+          Sign Up
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
             name="fullName"
             placeholder="Full Name"
             value={formData.fullName}
             onChange={handleChange}
-            required
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
           <input
             type="text"
@@ -64,7 +66,7 @@ const Signup = () => {
             placeholder="Username"
             value={formData.username}
             onChange={handleChange}
-            required
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
           <input
             type="email"
@@ -72,7 +74,7 @@ const Signup = () => {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            required
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
           <input
             type="password"
@@ -80,14 +82,34 @@ const Signup = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            required
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
-          <button type="submit">Sign Up</button>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition duration-200 font-medium"
+          >
+            Sign Up
+          </button>
         </form>
-        {error && <p className="error-msg">{error}</p>}
-        {success && <p className="success-msg">{success}</p>}
-        <p className="login-link">
-          Already have an account? <a href="/login">Log in</a>
+
+        {/* Status Messages */}
+        {error && (
+          <p className="text-red-500 text-sm text-center mt-4">{error}</p>
+        )}
+        {success && (
+          <p className="text-green-500 text-sm text-center mt-4">{success}</p>
+        )}
+
+        {/* Login Link */}
+        <p className="text-sm text-gray-600 text-center mt-6">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-blue-600 font-medium hover:underline"
+          >
+            Log in
+          </Link>
         </p>
       </div>
     </div>

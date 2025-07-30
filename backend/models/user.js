@@ -12,7 +12,10 @@ const UserSchema = new mongoose.Schema({
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: "Notification" }],
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+
+  // ✅ Email verification status
+  verified: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model("User", UserSchema);

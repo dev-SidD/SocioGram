@@ -5,7 +5,10 @@ const {
   updateProfile,
   deleteProfile,
   followUser,
-  unfollowUser
+  unfollowUser,
+  searchUsers,
+  getNotifications,
+  markAllNotificationsAsRead
 } = require("../controllers/userController");
 const authMiddleware = require("../middleware/authMiddleware"); // Ensure JWT verification
 
@@ -25,5 +28,8 @@ router.put("/follow/:username", authMiddleware, followUser);
 
 // Route to unfollow another user
 router.put("/unfollow/:username", authMiddleware, unfollowUser);
+router.get("/search", authMiddleware, searchUsers);
+router.get("/notifications", authMiddleware, getNotifications);
+router.patch("/notifications/mark-all", authMiddleware, markAllNotificationsAsRead);
 
 module.exports = router;

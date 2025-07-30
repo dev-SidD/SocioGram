@@ -1,6 +1,7 @@
 const { json } = require("express");
 const Post = require("../models/Post");
 const User = require("../models/user");
+const Notification = require("../models/notification");
 
 // Create a new post
 const createPost = async (req, res) => {
@@ -138,29 +139,60 @@ const deletePost = async (req, res) => {
 
 // Like a post
 const likePost = async (req, res) => {
-    const { postId } = req.params;
-    const { user } = req;
+  const { postId } = req.params;
+  const { user } = req;
 
-    try {
-        const post = await Post.findById(postId);
+  try {
+    const post = await Post.findById(postId).populate("user");
 
-        if (!post) {
-            return res.status(404).json({ msg: "Post not found." });
-        }
-
-        if (post.likes.includes(user.id)) {
-            return res.status(400).json({ msg: "You already liked this post." });
-        }
-
-        post.likes.push(user.id);
-        await post.save();
-
-        res.json({ msg: "Post liked successfully" });
-    } catch (error) {
-        console.error("Like post error:", error);
-        res.status(500).json({ error: "Server error" });
+    if (!post) {
+      return res.status(404).json({ msg: "Post not found." });
     }
+
+    if (post.likes.includes(user.id)) {
+      return res.status(400).json({ msg: "You already liked this post." });
+    }
+
+    post.likes.push(user.id);
+    await post.save();
+
+    // ✅ Fetch full user to get username
+    const likingUser = await User.findById(user.id);
+
+    // Save notification
+    if (post.user._id.toString() !== user.id) {
+      const newNotification = await Notification.create({
+        user: post.user._id,
+        fromUser: likingUser._id,
+        type: "like",
+        message: `${likingUser.username} liked your post.`,
+      });
+
+      // Emit notification via socket
+      const recipientSocketId = req.onlineUsers.get(post.user._id.toString());
+      if (recipientSocketId) {
+        req.io.to(recipientSocketId).emit("new-notification", {
+          _id: newNotification._id,
+          message: newNotification.message,
+          type: newNotification.type,
+          fromUser: {
+            _id: likingUser._id,
+            username: likingUser.username,
+            fullName: likingUser.fullName,
+            profilePicture: likingUser.profilePicture,
+          },
+          createdAt: newNotification.createdAt,
+        });
+      }
+    }
+
+    res.json({ msg: "Post liked successfully" });
+  } catch (error) {
+    console.error("Like post error:", error);
+    res.status(500).json({ error: "Server error" });
+  }
 };
+
 
 // Unlike a post
 const unlikePost = async (req, res) => {
@@ -190,32 +222,64 @@ const unlikePost = async (req, res) => {
 
 // Add a comment to a post
 const addComment = async (req, res) => {
-    const { postId } = req.params;
-    const { content , username} = req.body;
-    const { user } = req; // Extract user from request (assumed from middleware)
-  
-    try {
-      const post = await Post.findById(postId);
-  
-      if (!post) {
-        return res.status(404).json({ msg: "Post not found." });
-      }
-      const newComment = {
-        user: user.id, // Store the user ID
-        username: username,
-        content,
-        createdAt: new Date(),
-      };
-  
-      post.comments.push(newComment);
-      await post.save();
-  
-      res.status(201).json({ msg: "Comment added successfully", comment: newComment });
-    } catch (error) {
-      console.error("Add comment error:", error);
-      res.status(500).json({ error: "Server error" });
+  const { postId } = req.params;
+  const { content } = req.body;
+  const { user } = req;
+
+  try {
+    const post = await Post.findById(postId).populate("user");
+    if (!post) {
+      return res.status(404).json({ msg: "Post not found." });
     }
-  };
+
+    // ✅ Fetch full user to get username
+    const commentingUser = await User.findById(user.id);
+
+    const newComment = {
+      user: commentingUser._id,
+      username: commentingUser.username,
+      content,
+      createdAt: new Date(),
+    };
+
+    post.comments.push(newComment);
+    await post.save();
+
+    // ✅ Send notification if commenting on someone else's post
+    if (post.user._id.toString() !== user.id) {
+      const newNotification = await Notification.create({
+        user: post.user._id,
+        fromUser: commentingUser._id,
+        type: "comment",
+        message: `${commentingUser.username} commented on your post.`,
+      });
+
+      // ✅ Emit notification via socket if recipient is online
+      const recipientSocketId = req.onlineUsers.get(post.user._id.toString());
+      if (recipientSocketId) {
+        req.io.to(recipientSocketId).emit("new-notification", {
+          _id: newNotification._id,
+          message: newNotification.message,
+          type: newNotification.type,
+          fromUser: {
+            _id: commentingUser._id,
+            username: commentingUser.username,
+            fullName: commentingUser.fullName,
+            profilePicture: commentingUser.profilePicture,
+          },
+          createdAt: newNotification.createdAt,
+        });
+      }
+    }
+
+    res.status(201).json({ msg: "Comment added successfully", comment: newComment });
+  } catch (error) {
+    console.error("Add comment error:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+
   
 
 // Delete a comment from a post

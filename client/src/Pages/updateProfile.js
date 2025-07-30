@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../styles/updateProfile.css";
+
+import Layout from "../components/Layout";
 
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dncaefs5d/image/upload";
-const CLOUDINARY_PRESET = "userProfile_pictures"; // Cloudinary upload preset
+const CLOUDINARY_PRESET = "userProfile_pictures";
 
 const ProfileUpdate = () => {
   const [userData, setUserData] = useState({
@@ -35,8 +36,8 @@ const ProfileUpdate = () => {
     }
 
     if (data) {
-      setUserData((prevState) => ({
-        ...prevState,
+      setUserData((prev) => ({
+        ...prev,
         fullName: data.fullName || "",
         email: data.email || "",
         bio: data.bio || "",
@@ -48,10 +49,7 @@ const ProfileUpdate = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    setUserData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = async (e) => {
@@ -66,13 +64,12 @@ const ProfileUpdate = () => {
 
     try {
       const response = await axios.post(CLOUDINARY_URL, formData);
-      setUserData((prevState) => ({
-        ...prevState,
-        profilePicture: response.data.secure_url, // Save uploaded image URL
+      setUserData((prev) => ({
+        ...prev,
+        profilePicture: response.data.secure_url,
       }));
       setUploading(false);
     } catch (err) {
-      console.error("Error uploading image", err);
       setImageError("Failed to upload image. Try again.");
       setUploading(false);
     }
@@ -92,75 +89,124 @@ const ProfileUpdate = () => {
 
     try {
       const { fullName, email, bio, profilePicture, currentPassword, newPassword, username } = userData;
-      
+
       if (!username) {
-        setError("Username is missing. Please refresh and try again.");
+        setError("Username missing. Refresh and try again.");
         return;
       }
 
       const response = await axios.put(
         `http://localhost:5000/api/user/profile_u/${username}`,
-        { currUsername: username, fullName, email, bio, profilePicture, currentPassword, newPassword},
+        { currUsername: username, fullName, email, bio, profilePicture, currentPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setMessage(response.data.msg);
       localStorage.setItem("userData", JSON.stringify(response.data));
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to update profile. Please try again.");
-      console.error(err);
+      setError(err.response?.data?.message || "Failed to update profile. Try again.");
     }
   };
 
   return (
-    <div className="profile-update-container">
-      <h2 className="text-center text-2xl font-semibold">Update Your Profile</h2>
+    <Layout>
+    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
+      <h2 className="text-2xl font-bold text-center mb-6">Update Your Profile</h2>
 
-      {message && <p className="success-msg">{message}</p>}
-      {error && <p className="error-msg">{error}</p>}
-      {imageError && <p className="error-msg">{imageError}</p>}
+      {message && <p className="text-green-600 text-center mb-4">{message}</p>}
+      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+      {imageError && <p className="text-red-500 text-center mb-4">{imageError}</p>}
 
-      <form onSubmit={handleSubmit} className="profile-update-form">
-        <div className="input-group">
-          <label htmlFor="fullName">Full Name:</label>
-          <input type="text" id="fullName" name="fullName" value={userData.fullName} onChange={handleChange} required />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium">Full Name</label>
+          <input
+            type="text"
+            name="fullName"
+            value={userData.fullName}
+            onChange={handleChange}
+            required
+            className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
 
-        <div className="input-group">
-          <label htmlFor="email">Email:</label>
-          <input type="email" id="email" name="email" value={userData.email} onChange={handleChange} required />
+        <div>
+          <label className="block text-sm font-medium">Email</label>
+          <input
+            type="email"
+            name="email"
+            value={userData.email}
+            onChange={handleChange}
+            required
+            className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
 
-        <div className="input-group">
-          <label htmlFor="bio">Bio:</label>
-          <textarea id="bio" name="bio" value={userData.bio} onChange={handleChange} rows="4" />
+        <div>
+          <label className="block text-sm font-medium">Bio</label>
+          <textarea
+            name="bio"
+            rows="4"
+            value={userData.bio}
+            onChange={handleChange}
+            className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          ></textarea>
         </div>
 
-        <div className="input-group">
-          <label htmlFor="profilePicture">Profile Picture:</label>
-          <input type="file" id="profilePicture" accept="image/*" onChange={handleFileChange} />
-          {uploading && <p className="loading-msg">Uploading image...</p>}
+        <div>
+          <label className="block text-sm font-medium">Profile Picture</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="mt-1 w-full"
+          />
+          {uploading && <p className="text-blue-500 text-sm mt-1">Uploading image...</p>}
         </div>
 
         {userData.profilePicture && (
-          <div className="profile-pic-preview">
-            <img src={userData.profilePicture} alt="Profile" width="100" />
+          <div className="mt-4">
+            <img
+              src={userData.profilePicture}
+              alt="Profile Preview"
+              className="w-24 h-24 rounded-full object-cover mx-auto"
+            />
           </div>
         )}
 
-        <div className="input-group">
-          <label htmlFor="currentPassword">Current Password:</label>
-          <input type="password" id="currentPassword" name="currentPassword" value={userData.currentPassword} onChange={handleChange} placeholder="Enter current password" />
+        <div>
+          <label className="block text-sm font-medium">Current Password</label>
+          <input
+            type="password"
+            name="currentPassword"
+            value={userData.currentPassword}
+            onChange={handleChange}
+            placeholder="Enter current password"
+            className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
 
-        <div className="input-group">
-          <label htmlFor="newPassword">New Password:</label>
-          <input type="password" id="newPassword" name="newPassword" value={userData.newPassword} onChange={handleChange} placeholder="Enter new password" />
+        <div>
+          <label className="block text-sm font-medium">New Password</label>
+          <input
+            type="password"
+            name="newPassword"
+            value={userData.newPassword}
+            onChange={handleChange}
+            placeholder="Enter new password"
+            className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
 
-        <button type="submit" className="submit-btn">Update Profile</button>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+        >
+          Update Profile
+        </button>
       </form>
     </div>
+    </Layout>
   );
 };
 
