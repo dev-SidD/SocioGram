@@ -63,13 +63,16 @@ const ViewUserProfile = () => {
         setIsFollowing(true);
         setUserData((prevUser) => ({
           ...prevUser,
-          followers: [...prevUser.followers, currentUser.id],
+          followers: [...prevUser.followers, { _id: currentUser.id }], // Optimistic update
         }));
       } else if (response.data.msg === "Successfully unfollowed the user.") {
         setIsFollowing(false);
+        // Correctly filter followers by their _id
         setUserData((prevUser) => ({
           ...prevUser,
-          followers: prevUser.followers.filter((id) => id !== currentUser.id),
+          followers: prevUser.followers.filter(
+            (follower) => follower._id !== currentUser.id
+          ),
         }));
       }
     } catch (error) {
@@ -108,13 +111,14 @@ const ViewUserProfile = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Profile Header */}
-        <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-            {/* Profile Picture */}
-            <div className="relative">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 p-1">
+      <div className="max-w-4xl mx-auto px-2 sm:px-4">
+        {/* Profile Header -- Made responsive */}
+        <div className="bg-white rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm border border-gray-100 mb-6">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+            
+            {/* Profile Picture -- Responsive size */}
+            <div className="relative flex-shrink-0">
+              <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 p-1">
                 <img
                   src={
                     userData.profilePicture ||
@@ -126,10 +130,10 @@ const ViewUserProfile = () => {
               </div>
             </div>
 
-            {/* Profile Info */}
-            <div className="flex-1 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div>
+            {/* Profile Info -- Responsive alignment */}
+            <div className="flex-1 flex flex-col items-center md:items-start w-full">
+              <div className="flex flex-col sm:flex-row items-center sm:justify-between w-full gap-4">
+                <div className="text-center sm:text-left">
                   <h1 className="text-2xl font-bold text-gray-900">{userData.fullName}</h1>
                   <p className="text-gray-600 font-medium">@{userData.username}</p>
                 </div>
@@ -138,7 +142,7 @@ const ViewUserProfile = () => {
                   <button
                     className={`flex items-center gap-2 px-6 py-2 rounded-full font-medium transition-all duration-200 transform hover:scale-105 ${
                       isFollowing 
-                        ? "bg-red-500 hover:bg-red-600 text-white" 
+                        ? "bg-gray-200 text-gray-800 hover:bg-gray-300" 
                         : "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                     }`}
                     onClick={handleFollowToggle}
@@ -148,15 +152,15 @@ const ViewUserProfile = () => {
                 )}
               </div>
 
-              {/* Bio */}
-              <div className="max-w-md">
+              {/* Bio -- Responsive text alignment */}
+              <div className="max-w-full md:max-w-md mt-4 text-center md:text-left">
                 <p className="text-gray-700 leading-relaxed">
                   {userData.bio || "No bio available."}
                 </p>
               </div>
 
-              {/* Stats */}
-              <div className="flex gap-8 pt-2">
+              {/* Stats -- Responsive alignment */}
+              <div className="flex justify-center md:justify-start gap-8 pt-4 w-full">
                 <div className="text-center">
                   <div className="text-xl font-bold text-gray-900">{posts.length}</div>
                   <div className="text-sm text-gray-600">Posts</div>
@@ -185,10 +189,11 @@ const ViewUserProfile = () => {
         </div>
 
         {/* Posts Grid */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Posts</h3>
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 sm:p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Posts</h3>
           {posts.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            // --- CHANGE MADE HERE ---
+            <div className="grid grid-cols-3 gap-2">
               {posts.map((post) => (
                 <div
                   key={post._id}
@@ -205,7 +210,8 @@ const ViewUserProfile = () => {
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                         </svg>
-                        <span>Like</span>
+                        {/* Correctly display like count */}
+                        <span>{post.likes?.length || 0}</span>
                       </div>
                     </div>
                   </div>
@@ -226,6 +232,7 @@ const ViewUserProfile = () => {
         </div>
       </div>
 
+      {/* Modals */}
       {showFollowersModal && (
         <FollowersModal
           followers={userData.followers}
@@ -233,7 +240,6 @@ const ViewUserProfile = () => {
           title="Followers"
         />
       )}
-
       {showFollowingModal && (
         <FollowersModal
           followers={userData.following}

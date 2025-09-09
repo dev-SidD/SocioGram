@@ -4,6 +4,7 @@ import { Edit, LogOut, PlusCircle } from "lucide-react";
 import axios from "axios";
 import FollowersModal from "../components/FollowersModal";
 import PostCardModal from "../components/PostCardModal";
+
 const UserProfile = () => {
   const [showFollowersModal, setShowFollowersModal] = useState(false);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
@@ -46,23 +47,20 @@ const UserProfile = () => {
       localStorage.removeItem("userData");
       navigate("/login");
     }
-
   };
 
   if (!userData) return <div className="text-center py-8">Loading...</div>;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      
-     
-
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-2 sm:px-4 py-8">
         {/* Profile Header */}
-        <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+        <div className="bg-white rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm border border-gray-100 mb-6">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+            
             {/* Profile Picture */}
-            <div className="relative">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 p-1">
+            <div className="relative flex-shrink-0">
+              <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 p-1">
                 <img
                   src={
                     userData.profilePicture ||
@@ -75,40 +73,51 @@ const UserProfile = () => {
             </div>
 
             {/* Profile Info */}
-            <div className="flex-1 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div>
+            <div className="flex-1 flex flex-col items-center md:items-start w-full">
+              <div className="flex flex-col sm:flex-row items-center sm:justify-between w-full gap-4">
+                <div className="text-center sm:text-left">
                   <h1 className="text-2xl font-bold text-gray-900">{userData.fullName}</h1>
                   <p className="text-gray-600 font-medium">@{userData.username}</p>
                 </div>
                 
-                <div className="flex flex-wrap gap-2">
+                {/* Responsive Action Buttons */}
+                <div className="flex items-center gap-2 flex-shrink-0">
                   <button
-                    className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105"
+                    className="flex items-center justify-center gap-2 w-10 h-10 md:w-auto md:px-5 md:py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105"
                     onClick={() => navigate("/update-profile")}
+                    title="Edit Profile"
                   >
-                    <Edit size={16} />
-                    Edit Profile
+                    <Edit size={18} />
+                    <span className="hidden md:inline font-semibold">Edit Profile</span>
                   </button>
                   <button
-                    className="flex items-center gap-2 px-6 py-2 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors"
+                    className="flex items-center justify-center gap-2 w-10 h-10 md:w-auto md:px-5 md:py-2 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors"
                     onClick={() => navigate("/create-post")}
+                    title="New Post"
                   >
-                    <PlusCircle size={16} />
-                    New Post
+                    <PlusCircle size={18} />
+                    <span className="hidden md:inline font-semibold">New Post</span>
                   </button>
+                   <button
+                      className="flex items-center justify-center gap-2 w-10 h-10 md:w-auto md:px-5 md:py-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                      onClick={handleLogout}
+                      title="Logout"
+                    >
+                      <LogOut size={18} />
+                      <span className="hidden md:inline font-semibold">Logout</span>
+                    </button>
                 </div>
               </div>
 
               {/* Bio */}
-              <div className="max-w-md">
+              <div className="max-w-full md:max-w-md mt-4 text-center md:text-left">
                 <p className="text-gray-700 leading-relaxed whitespace-pre-line">
                   {userData.bio || "No bio available."}
                 </p>
               </div>
 
               {/* Stats */}
-              <div className="flex gap-8 pt-2">
+              <div className="flex justify-center md:justify-start gap-8 pt-4 w-full">
                 <div className="text-center">
                   <div className="text-xl font-bold text-gray-900">{posts.length}</div>
                   <div className="text-sm text-gray-600">Posts</div>
@@ -138,9 +147,12 @@ const UserProfile = () => {
 
         {/* Posts Grid */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 mb-6">
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Posts</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            
+            {/* --- CHANGE MADE HERE --- */}
+            {/* This grid now has 3 columns on all screen sizes and a smaller gap. */}
+            <div className="grid grid-cols-3 gap-2">
               {posts.length > 0 ? (
                 posts.map((post) => (
                   <div
@@ -195,7 +207,6 @@ const UserProfile = () => {
           title="Followers"
         />
       )}
-
       {showFollowingModal && (
         <FollowersModal
           followers={userData.following}
@@ -203,7 +214,6 @@ const UserProfile = () => {
           title="Following"
         />
       )}
-
       {selectedPostId && (
         <PostCardModal
           postId={selectedPostId}

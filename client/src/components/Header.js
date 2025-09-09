@@ -65,7 +65,7 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+      <div className=" mx-auto px-12 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
         <Link
           to="/"
           className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-purple-600 via-pink-500 to-amber-400 bg-clip-text text-transparent hover:scale-110 transition-all duration-300 drop-shadow-lg hover:drop-shadow-2xl animate-logo-glow"
