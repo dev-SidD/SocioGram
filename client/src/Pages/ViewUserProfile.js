@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import FollowersModal from "../components/FollowersModal";
-import Layout from "../components/Layout";
 
 const ViewUserProfile = () => {
   const { username } = useParams();
@@ -82,8 +81,7 @@ const ViewUserProfile = () => {
   if (!userData) return <div className="text-center py-8 text-red-500">User not found.</div>;
 
   return (
-    <Layout>
-    <div className="max-w-5xl mx-auto mt-16 p-4">
+    <div className="max-w-5xl mx-auto p-4">
       <div className="flex flex-col sm:flex-row items-center sm:items-start sm:gap-8 border-b pb-6">
         <img
           src={
@@ -163,7 +161,6 @@ const ViewUserProfile = () => {
         />
       )}
     </div>
-    </Layout>
   );
 };
 

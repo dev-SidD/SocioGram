@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-import Layout from "../components/Layout";
 
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dncaefs5d/image/upload";
 const CLOUDINARY_PRESET = "userProfile_pictures";
@@ -109,8 +108,7 @@ const ProfileUpdate = () => {
   };
 
   return (
-    <Layout>
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-lg">
       <h2 className="text-2xl font-bold text-center mb-6">Update Your Profile</h2>
 
       {message && <p className="text-green-600 text-center mb-4">{message}</p>}
@@ -206,7 +204,6 @@ const ProfileUpdate = () => {
         </button>
       </form>
     </div>
-    </Layout>
   );
 };
 

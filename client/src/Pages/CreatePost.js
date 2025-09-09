@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { ImagePlus, Loader2 } from "lucide-react";
-import Layout from "../components/Layout";
 
 
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dncaefs5d/image/upload";
@@ -88,8 +87,7 @@ const CreatePost = () => {
   };
 
   return (
-    <Layout>
-    <div className="max-w-lg mx-auto mt-10 bg-white shadow-xl p-6 rounded-2xl border border-gray-100">
+    <div className="max-w-lg mx-auto bg-white shadow-xl p-6 rounded-2xl border border-gray-100">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Create Post</h2>
 
       <textarea
@@ -137,7 +135,6 @@ const CreatePost = () => {
         Create Post
       </button>
     </div>
-    </Layout>
   );
 };
 

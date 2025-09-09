@@ -4,7 +4,6 @@ import { Edit, LogOut, PlusCircle } from "lucide-react";
 import axios from "axios";
 import FollowersModal from "../components/FollowersModal";
 import PostCardModal from "../components/PostCardModal";
-import Layout from "../components/Layout";
 const UserProfile = () => {
   const [showFollowersModal, setShowFollowersModal] = useState(false);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
@@ -53,8 +52,7 @@ const UserProfile = () => {
   if (!userData) return <div className="text-center py-8">Loading...</div>;
 
   return (
-    <Layout>
-    <div className="max-w-5xl mx-auto mt-16 p-4">
+    <div className="max-w-5xl mx-auto p-4">
       {/* Profile Header */}
       <div className="flex flex-col sm:flex-row items-center sm:items-start sm:gap-8 border-b pb-6">
         <img
@@ -163,7 +161,6 @@ const UserProfile = () => {
         />
       )}
     </div>
-    </Layout>
   );
 };
 

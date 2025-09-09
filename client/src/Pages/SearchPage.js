@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import Layout from "../components/Layout";
 
 const SearchPage = () => {
   const [query, setQuery] = useState("");
@@ -48,7 +47,6 @@ const SearchPage = () => {
   }, [query, authenticatedUsername]);
 
   return (
-    <Layout>
     <div className="max-w-xl mx-auto px-4 py-6">
       <h2 className="text-2xl font-bold text-center mb-4 text-black">Search</h2>
 
@@ -87,7 +85,6 @@ const SearchPage = () => {
         <p className="mt-6 text-center text-gray-500">No users found.</p>
       )}
     </div>
-    </Layout>
   );
 };
 

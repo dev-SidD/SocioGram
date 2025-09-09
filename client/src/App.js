@@ -12,7 +12,8 @@ import ViewUserProfile from './Pages/ViewUserProfile';
 import SearchPage from './Pages/SearchPage';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
-import Header from './components/Header';
+// Header is now included inside Layout
+import LayoutRoute from './components/LayoutRoute';
 import VerifyEmail from './Pages/VerifyEmail';
 import { SocketProvider } from './context/SocketContext';
 import { UserProvider, useUser } from './context/UserContext';
@@ -31,7 +32,6 @@ const AppWithSocket = () => {
     <SocketProvider userId={userId}>
       <Router>
         <div className="App min-h-screen bg-gray-50 flex flex-col">
-          <Header />
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
@@ -39,13 +39,15 @@ const AppWithSocket = () => {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify-email/:token" element={<VerifyEmail />} />
-            {/* Authenticated Routes */}
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/create-post" element={<CreatePost />} />
-            <Route path="/user-profile" element={<UserProfile />} />
-            <Route path="/update-profile" element={<UpdateProfile />} />
-            <Route path="/profile/:username" element={<ViewUserProfile />} />
-            <Route path="/search" element={<SearchPage />} />
+            {/* Authenticated Routes under persistent layout */}
+            <Route element={<LayoutRoute />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/create-post" element={<CreatePost />} />
+              <Route path="/user-profile" element={<UserProfile />} />
+              <Route path="/update-profile" element={<UpdateProfile />} />
+              <Route path="/profile/:username" element={<ViewUserProfile />} />
+              <Route path="/search" element={<SearchPage />} />
+            </Route>
           </Routes>
         </div>
       </Router>
