@@ -108,101 +108,151 @@ const ProfileUpdate = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold text-center mb-6">Update Your Profile</h2>
-
-      {message && <p className="text-green-600 text-center mb-4">{message}</p>}
-      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-      {imageError && <p className="text-red-500 text-center mb-4">{imageError}</p>}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium">Full Name</label>
-          <input
-            type="text"
-            name="fullName"
-            value={userData.fullName}
-            onChange={handleChange}
-            required
-            className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={userData.email}
-            onChange={handleChange}
-            required
-            className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Bio</label>
-          <textarea
-            name="bio"
-            rows="4"
-            value={userData.bio}
-            onChange={handleChange}
-            className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          ></textarea>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Profile Picture</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="mt-1 w-full"
-          />
-          {uploading && <p className="text-blue-500 text-sm mt-1">Uploading image...</p>}
-        </div>
-
-        {userData.profilePicture && (
-          <div className="mt-4">
-            <img
-              src={userData.profilePicture}
-              alt="Profile Preview"
-              className="w-24 h-24 rounded-full object-cover mx-auto"
-            />
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-2xl mx-auto px-4">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Update Your Profile</h2>
+            <p className="text-gray-600">Keep your information up to date</p>
           </div>
-        )}
 
-        <div>
-          <label className="block text-sm font-medium">Current Password</label>
-          <input
-            type="password"
-            name="currentPassword"
-            value={userData.currentPassword}
-            onChange={handleChange}
-            placeholder="Enter current password"
-            className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          {/* Status Messages */}
+          {message && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 text-sm rounded-2xl text-center">
+              {message}
+            </div>
+          )}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 text-sm rounded-2xl text-center">
+              {error}
+            </div>
+          )}
+          {imageError && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 text-sm rounded-2xl text-center">
+              {imageError}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Profile Picture Section */}
+            <div className="text-center">
+              <div className="relative inline-block">
+                {userData.profilePicture ? (
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 p-1 mx-auto">
+                    <img
+                      src={userData.profilePicture}
+                      alt="Profile Preview"
+                      className="w-full h-full rounded-full object-cover bg-white p-1"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 p-1 mx-auto flex items-center justify-center">
+                    <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500 text-2xl">👤</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <label className="mt-4 inline-flex items-center gap-2 cursor-pointer px-6 py-3 bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 text-purple-600 font-medium rounded-2xl transition-all duration-200 border border-purple-200">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Change Photo
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+              
+              {uploading && (
+                <div className="mt-2 flex items-center justify-center gap-2 text-purple-600">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+                  <span className="text-sm font-medium">Uploading image...</span>
+                </div>
+              )}
+            </div>
+
+            {/* Form Fields */}
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                <input
+                  type="text"
+                  name="fullName"
+                  value={userData.fullName}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-6 py-4 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 bg-gray-50/50 backdrop-blur-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={userData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-6 py-4 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 bg-gray-50/50 backdrop-blur-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                <textarea
+                  name="bio"
+                  rows="4"
+                  value={userData.bio}
+                  onChange={handleChange}
+                  placeholder="Tell us about yourself..."
+                  className="w-full px-6 py-4 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 bg-gray-50/50 backdrop-blur-sm resize-none"
+                ></textarea>
+              </div>
+
+              <div className="border-t border-gray-200 pt-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Change Password</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                    <input
+                      type="password"
+                      name="currentPassword"
+                      value={userData.currentPassword}
+                      onChange={handleChange}
+                      placeholder="Enter current password"
+                      className="w-full px-6 py-4 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 bg-gray-50/50 backdrop-blur-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                    <input
+                      type="password"
+                      name="newPassword"
+                      value={userData.newPassword}
+                      onChange={handleChange}
+                      placeholder="Enter new password"
+                      className="w-full px-6 py-4 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 bg-gray-50/50 backdrop-blur-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-4 rounded-2xl transition-all duration-200 font-semibold transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+            >
+              Update Profile
+            </button>
+          </form>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium">New Password</label>
-          <input
-            type="password"
-            name="newPassword"
-            value={userData.newPassword}
-            onChange={handleChange}
-            placeholder="Enter new password"
-            className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
-        >
-          Update Profile
-        </button>
-      </form>
+      </div>
     </div>
   );
 };

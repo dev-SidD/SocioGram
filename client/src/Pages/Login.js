@@ -40,61 +40,88 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-          Log In
-        </h2>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50 flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-sm sm:max-w-md">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <h1 
+            className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-purple-600 via-pink-500 to-amber-400 bg-clip-text text-transparent drop-shadow-2xl animate-logo-glow animate-logo-float"
+            style={{ 
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 900,
+              letterSpacing: "-0.03em"
+            }}
+          >
+            SocioGram
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-2">Welcome back! Please sign in to your account.</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          />
+        <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-3xl p-6 sm:p-8 border border-white/20">
+          <h2 className="text-xl sm:text-2xl font-bold text-center text-gray-900 mb-6 sm:mb-8">
+            Sign In
+          </h2>
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
+              <div>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email address"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-6 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 bg-gray-50/50 backdrop-blur-sm"
+                />
+              </div>
 
-          <div className="text-right text-sm">
-            <Link
-              to="/forgot-password"
-              className="text-blue-600 hover:underline font-medium"
+              <div>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-6 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 bg-gray-50/50 backdrop-blur-sm"
+                />
+              </div>
+            </div>
+
+            <div className="text-right">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-purple-600 hover:text-purple-700 font-medium hover:underline transition-colors"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-4 rounded-2xl transition-all duration-200 font-semibold transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
             >
-              Forgot Password?
-            </Link>
+              Sign In
+            </button>
+          </form>
+
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 text-red-800 text-sm rounded-2xl text-center">
+              {error}
+            </div>
+          )}
+
+          <div className="mt-8 text-center">
+            <p className="text-gray-600">
+              Don&apos;t have an account?{" "}
+              <Link
+                to="/signup"
+                className="text-purple-600 font-semibold hover:text-purple-700 hover:underline transition-colors"
+              >
+                Sign up
+              </Link>
+            </p>
           </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition duration-200 font-medium"
-          >
-            Log In
-          </button>
-        </form>
-
-        {error && (
-          <p className="text-red-500 text-sm text-center mt-4">{error}</p>
-        )}
-
-        <p className="text-sm text-gray-600 text-center mt-6">
-          Don&apos;t have an account?{" "}
-          <Link
-            to="/signup"
-            className="text-blue-600 font-medium hover:underline"
-          >
-            Sign up
-          </Link>
-        </p>
+        </div>
       </div>
     </div>
   );

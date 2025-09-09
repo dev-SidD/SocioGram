@@ -9,7 +9,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const socket = useSocket();
 
-  // Notifications moved to Header
+  
 
   const token = localStorage.getItem("token");
   const userData = JSON.parse(localStorage.getItem("userData"));
@@ -34,12 +34,8 @@ const Dashboard = () => {
   // Clear all moved to Header
 
   return (
-    <div className="relative">
+    <div className="min-h-screen bg-gray-50">
       <Timeline />
-
-      {/* Notifications moved to Header */}
-
-      {/* UserList removed as requested */}
     </div>
   );
 };

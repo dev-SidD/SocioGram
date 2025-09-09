@@ -6,7 +6,7 @@ import Header from "./Header";
 
 const Layout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen bg-gray-50 font-inter">
       <Header />
 
       {/* Shell with sidebar and main area */}
@@ -15,7 +15,7 @@ const Layout = ({ children }) => {
         <SidebarNavbar />
 
         {/* Main content area */}
-        <main className="flex-1 md:ml-64 px-4 sm:px-6 lg:px-8 pb-24 pt-24 max-w-2xl mx-auto">
+        <main className="flex-1 md:ml-64 lg:ml-72 px-4 sm:px-6 lg:px-8 pb-20 md:pb-24 pt-16 max-w-4xl mx-auto">
           {children}
         </main>
       </div>

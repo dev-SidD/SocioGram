@@ -52,88 +52,140 @@ const UserProfile = () => {
   if (!userData) return <div className="text-center py-8">Loading...</div>;
 
   return (
-    <div className="max-w-5xl mx-auto p-4">
-      {/* Profile Header */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-start sm:gap-8 border-b pb-6">
-        <img
-          src={
-            userData.profilePicture ||
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/768px-Windows_10_Default_Profile_Picture.svg.png"
-          }
-          alt="Profile"
-          className="w-28 h-28 rounded-full object-cover border border-gray-300"
-        />
+    <div className="min-h-screen bg-gray-50">
+      
+     
 
-        <div className="flex-1 text-center sm:text-left mt-4 sm:mt-0">
-          <h2 className="text-2xl font-semibold">{userData.fullName}</h2>
-          <p className="text-gray-600">@{userData.username}</p>
-          <p className="text-sm mt-2">{userData.bio || "No bio available."}</p>
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Profile Header */}
+        <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+            {/* Profile Picture */}
+            <div className="relative">
+              <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 p-1">
+                <img
+                  src={
+                    userData.profilePicture ||
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/768px-Windows_10_Default_Profile_Picture.svg.png"
+                  }
+                  alt="Profile"
+                  className="w-full h-full rounded-full object-cover bg-white p-1"
+                />
+              </div>
+            </div>
 
-          {/* Stats */}
-          <div className="flex justify-center sm:justify-start gap-6 mt-4 text-sm">
-            <span><strong>{posts.length}</strong> posts</span>
-            <span
-              onClick={() => setShowFollowersModal(true)}
-              className="cursor-pointer hover:text-gray-600"
-            >
-              <strong>{userData.followers?.length || 0}</strong> followers
-            </span>
-            <span
-              onClick={() => setShowFollowingModal(true)}
-              className="cursor-pointer hover:text-gray-600"
-            >
-              <strong>{userData.following?.length || 0}</strong> following
-            </span>
+            {/* Profile Info */}
+            <div className="flex-1 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">{userData.fullName}</h1>
+                  <p className="text-gray-600 font-medium">@{userData.username}</p>
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105"
+                    onClick={() => navigate("/update-profile")}
+                  >
+                    <Edit size={16} />
+                    Edit Profile
+                  </button>
+                  <button
+                    className="flex items-center gap-2 px-6 py-2 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors"
+                    onClick={() => navigate("/create-post")}
+                  >
+                    <PlusCircle size={16} />
+                    New Post
+                  </button>
+                </div>
+              </div>
+
+              {/* Bio */}
+              <div className="max-w-md">
+                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                  {userData.bio || "No bio available."}
+                </p>
+              </div>
+
+              {/* Stats */}
+              <div className="flex gap-8 pt-2">
+                <div className="text-center">
+                  <div className="text-xl font-bold text-gray-900">{posts.length}</div>
+                  <div className="text-sm text-gray-600">Posts</div>
+                </div>
+                <button
+                  onClick={() => setShowFollowersModal(true)}
+                  className="text-center hover:opacity-75 transition-opacity"
+                >
+                  <div className="text-xl font-bold text-gray-900">
+                    {userData.followers?.length.toLocaleString() || 0}
+                  </div>
+                  <div className="text-sm text-gray-600">Followers</div>
+                </button>
+                <button
+                  onClick={() => setShowFollowingModal(true)}
+                  className="text-center hover:opacity-75 transition-opacity"
+                >
+                  <div className="text-xl font-bold text-gray-900">
+                    {userData.following?.length.toLocaleString() || 0}
+                  </div>
+                  <div className="text-sm text-gray-600">Following</div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Posts Grid */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 mb-6">
+          <div className="p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Posts</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {posts.length > 0 ? (
+                posts.map((post) => (
+                  <div
+                    key={post._id}
+                    className="group relative aspect-square cursor-pointer rounded-2xl overflow-hidden bg-gray-100"
+                    onClick={() => setSelectedPostId(post._id)}
+                  >
+                    <img
+                      src={post.image || "https://via.placeholder.com/300"}
+                      alt="Post"
+                      className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-6 text-white font-medium">
+                        <div className="flex items-center gap-2">
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                          </svg>
+                          <span>{post.likes?.length || 0}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-16">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No posts yet</h3>
+                  <p className="text-gray-600 mb-6">Share your first photo or video to get started!</p>
+                  <button 
+                    className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105"
+                    onClick={() => navigate("/create-post")}
+                  >
+                    Create First Post
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Buttons */}
-      <div className="flex flex-wrap gap-4 justify-center sm:justify-start mt-6">
-        <button
-          className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          onClick={() => navigate("/update-profile")}
-        >
-          <Edit size={18} /> Edit
-        </button>
-        <button
-          className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          onClick={() => navigate("/create-post")}
-        >
-          <PlusCircle size={18} /> Post
-        </button>
-        <button
-          className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-          onClick={handleLogout}
-        >
-          <LogOut size={18} /> Logout
-        </button>
-      </div>
-
-      {/* Posts Grid */}
-      <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 gap-2">
-        {posts.length > 0 ? (
-          posts.map((post) => (
-            <div
-              key={post._id}
-              className="aspect-square cursor-pointer overflow-hidden"
-              onClick={() => setSelectedPostId(post._id)}
-            >
-              <img
-                src={post.image || "https://via.placeholder.com/300"}
-                alt="Post"
-                className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-          ))
-        ) : (
-          <div className="col-span-full text-center text-gray-500">
-            No posts yet.
-          </div>
-        )}
-      </div>
-
-      {/* Floating Button */}
 
       {/* Modals */}
       {showFollowersModal && (

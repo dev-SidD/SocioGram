@@ -29,34 +29,39 @@ const SidebarNavbar = () => {
     }
   };
 
-  const activeClasses =
-    "bg-pink-100 text-pink-600 font-semibold shadow-sm";
-  const baseClasses =
-    "flex items-center gap-4 px-4 py-2 rounded-lg transition-all duration-200 text-gray-700 hover:text-pink-600 hover:bg-pink-50";
-
   return (
-    <aside className="hidden md:flex fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-white/80 backdrop-blur-lg border-r border-gray-200 px-6 py-8 z-50 shadow-xl ">
-      <ul className="flex flex-col gap-4 w-full">
+    <aside className="hidden md:flex fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 lg:w-72 bg-white/90 backdrop-blur-md border-r border-gray-200 px-4 lg:px-8 py-6 lg:py-10 z-40 shadow-xl">
+      <ul className="flex flex-col gap-2 w-full">
         {navItems.map((item) => (
           <li key={item.path}>
             <Link
               to={item.path}
-              className={`${baseClasses} ${
-                pathname === item.path ? activeClasses : ""
+              className={`flex items-center gap-3 lg:gap-4 text-gray-700 hover:text-purple-600 transition-all duration-200 px-3 lg:px-4 py-2 lg:py-3 rounded-2xl group ${
+                pathname === item.path 
+                  ? "bg-gradient-to-r from-purple-50 to-pink-50 text-purple-600 font-semibold shadow-sm border border-purple-100" 
+                  : "hover:bg-gray-50"
               }`}
             >
-              {item.icon}
-              <span className="text-base">{item.label}</span>
+              <div className={`p-2 rounded-xl transition-all duration-200 ${
+                pathname === item.path 
+                  ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white" 
+                  : "group-hover:bg-purple-100 group-hover:text-purple-600"
+              }`}>
+                {item.icon}
+              </div>
+              <span className="text-sm lg:text-base font-medium">{item.label}</span>
             </Link>
           </li>
         ))}
-        <li className="mt-6 border-t pt-4 border-gray-300">
+        <li className="mt-8 pt-4 border-t border-gray-200">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-4 px-4 py-2 rounded-lg transition-all duration-200 text-gray-700 hover:text-red-600 hover:bg-red-50"
+            className="flex items-center gap-3 lg:gap-4 text-red-600 hover:text-red-700 transition-all duration-200 px-3 lg:px-4 py-2 lg:py-3 rounded-2xl hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 group w-full border border-red-200 hover:border-red-300 hover:shadow-sm bg-red-50/50"
           >
-            <FaSignOutAlt className="text-lg" />
-            <span className="text-base">Logout</span>
+            <div className="p-2 rounded-xl bg-red-100 group-hover:bg-gradient-to-r group-hover:from-red-500 group-hover:to-pink-500 group-hover:text-white transition-all duration-200">
+              <FaSignOutAlt className="text-lg" />
+            </div>
+            <span className="text-sm lg:text-base font-semibold">Logout</span>
           </button>
         </li>
       </ul>
