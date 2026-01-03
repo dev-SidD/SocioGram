@@ -1,7 +1,6 @@
 <div align="center">
 
-<!-- ===================== BANNER ===================== -->
-<img src="https://raw.githubusercontent.com/your-username/SocioGram/main/assets/banner.png" width="100%" />
+
 
 # 🌐 **SocioGram**
 ### _A Full-Stack Social Media Web Application_
@@ -144,4 +143,36 @@ SocioGram/
 │
 ├── .env
 └── README.md
+```
+### ⚙️ Environment Variables
+
+Create a .env file inside the server/ directory:
+```text
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+CLIENT_URL=http://localhost:3000
+```
+
+### 🧪 Local Setup
+
+1️⃣ Clone the Repository
+```text
+git clone https://github.com/your-username/SocioGram.git
+cd SocioGram
+```
+
+2️⃣ Backend Setup
+```text
+cd backend
+npm install
+npm start
+
+```
+3️⃣ Frontend Setup
+```text
+cd frontend
+npm install
+npm start
+
 ```
