@@ -1,71 +1,147 @@
-# Sociogram
+<div align="center">
 
-Sociogram is a full-stack social media web application built using the MERN (MongoDB, Express, React, Node.js) stack. It allows users to create profiles, share posts, follow other users, and interact in a social environment.
+<!-- ===================== BANNER ===================== -->
+<img src="https://raw.githubusercontent.com/your-username/SocioGram/main/assets/banner.png" width="100%" />
 
-## Features
+# 🌐 **SocioGram**
+### _A Full-Stack Social Media Web Application_
 
-- **User Authentication**: Secure login and registration using JWT authentication.
-- **Profile Management**: Users can create and update their profiles.
-- **Post Creation & Interaction**: Users can create posts, like, and comment on posts.
-- **Follow/Unfollow System**: Users can follow/unfollow others.
-- **Cloudinary Integration**: Image uploads for profile pictures and posts.
-- **Real-time Notifications** (Planned Feature): Receive updates when someone interacts with your posts.
+📸 Share • 💬 Connect • ❤️ Engage  
 
-## Tech Stack
+<br/>
 
-- **Frontend**: React.js, Redux, Tailwind CSS
-- **Backend**: Node.js, Express.js
-- **Database**: MongoDB (MongoDB Atlas)
-- **Authentication**: JWT (JSON Web Tokens)
-- **Cloud Storage**: Cloudinary
-- **Deployment**: (Add deployment details if hosted)
+<img src="https://skillicons.dev/icons?i=react,nodejs,express,mongodb,js,html,css,git,github" />
 
-## Installation & Setup
+<br/><br/>
 
-### Prerequisites
-Ensure you have the following installed:
+![Stack](https://img.shields.io/badge/Stack-MERN-00c9a7?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
+![Auth](https://img.shields.io/badge/Auth-JWT-blue?style=for-the-badge)
+
+</div>
+
+---
+
+## ✨ Overview
+
+**SocioGram** is a full-stack **social media web application** that allows users to  
+connect with others, share posts, like and comment, and manage their personal profiles.
+
+The project focuses on:
+- Secure authentication
+- Real-time-like social interactions
+- Clean and modern UI
+- Scalable backend architecture
+
+---
+
+## 🌟 Key Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 🔐 Authentication & Security
+- User signup & login
+- JWT-based authentication
+- Password reset functionality
+- Protected routes
+
+</td>
+<td width="50%">
+
+### 👤 User Profiles
+- View public user profiles
+- Follow & unfollow users
+- User suggestions
+- Profile-based post feed
+
+</td>
+</tr>
+
+<tr>
+<td width="50%">
+
+### 🖼️ Posts & Timeline
+- Create image & text posts
+- Like & unlike posts
+- Comment on posts
+- Timeline feed
+
+</td>
+<td width="50%">
+
+### 💬 Social Features
+- User discovery
+- Real-time ready socket context
+- Interactive UI components
+- Responsive design
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🛠️ Tech Stack
+
+### 🎨 Frontend
+<img src="https://skillicons.dev/icons?i=react,js,html,css" />
+
+- React.js
+- JavaScript (ES6+)
+- HTML5 & CSS3
+- Context API
+- Protected Routing
+
+### ⚙️ Backend
+<img src="https://skillicons.dev/icons?i=nodejs,express,mongodb" />
+
 - Node.js
-- MongoDB (or a MongoDB Atlas connection)
+- Express.js
+- MongoDB
+- REST APIs
+- JWT Authentication
 
-### Steps
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/dev-SidD/SocioGram.git
-   cd Sociogram
-   ```
-2. Install dependencies for both frontend and backend:
-   ```bash
-   cd backend
-   npm install
-   cd ../client
-   npm install
-   ```
-3. Set up environment variables: Create a `.env` file in the backend folder and add:
-   ```
-   MONGO_URI=your_mongo_db_uri
-   JWT_SECRET=your_secret_key
-   CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-   CLOUDINARY_API_KEY=your_cloudinary_api_key
-   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-   ```
-4. Start the backend server:
-   ```bash
-   cd backend
-   npm start
-   ```
-5. Start the frontend:
-   ```bash
-   cd client
-   npm start
-   ```
+### 🧰 Tools
+<img src="https://skillicons.dev/icons?i=git,github" />
 
-## Contributing
-Feel free to submit issues or pull requests to improve the project.
+- Git & GitHub
+- VS Code
 
-## License
-This project is licensed under the MIT License.
+---
 
-## Contact
-- **GitHub**: [dev-SidD](https://github.com/dev-SidD)
-- **Email**: (Add your email if you want to be contacted)
+## 📁 Project Structure
 
+```text
+SocioGram/
+├── backend/
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   └── authcontroller.js
+│   ├── models/
+│   ├── routes/
+│   ├── SeedUsers.js
+│   ├── clearUser.js
+│   └── index.js
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Navbar.js
+│   │   │   ├── SidebarNavbar.js
+│   │   │   ├── TimeLine.js
+│   │   │   ├── PostCardModal.js
+│   │   │   └── ProtectedRoute.js
+│   │   ├── context/
+│   │   │   ├── UserContext.js
+│   │   │   └── SocketContext.js
+│   │   ├── utils/
+│   │   │   └── postActions.js
+│   │   └── App.js
+│   └── package.json
+│
+├── .env
+└── README.md
+```
